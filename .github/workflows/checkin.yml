@@ -1,27 +1,27 @@
 name: TG 自动签到
-
+ 
 on:
   schedule:
     # 每天 UTC 00:10 运行,相当于北京时间早上 8:10
     # cron 语法: 分 时 日 月 星期
     - cron: "10 0 * * *"
   workflow_dispatch: {}  # 允许在 Actions 页面手动点一下立即运行,方便测试
-
+ 
 jobs:
   checkin:
     runs-on: ubuntu-latest
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
-
+ 
       - name: 安装 Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
+ 
       - name: 安装依赖
-        run: pip install telethon
-
+        run: pip install telethon pysocks
+ 
       - name: 执行签到
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
@@ -29,5 +29,10 @@ jobs:
           TG_SESSION: ${{ secrets.TG_SESSION }}
           TG_BOT_USERNAME: ${{ secrets.TG_BOT_USERNAME }}
           TG_NOTIFY_TARGET: ${{ secrets.TG_NOTIFY_TARGET }}
+          TG_PROXY_TYPE: ${{ secrets.TG_PROXY_TYPE }}
+          TG_PROXY_HOST: ${{ secrets.TG_PROXY_HOST }}
+          TG_PROXY_PORT: ${{ secrets.TG_PROXY_PORT }}
+          TG_PROXY_USERNAME: ${{ secrets.TG_PROXY_USERNAME }}
+          TG_PROXY_PASSWORD: ${{ secrets.TG_PROXY_PASSWORD }}
         run: python checkin.py
-
+ 
